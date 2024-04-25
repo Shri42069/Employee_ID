@@ -1,0 +1,89 @@
+<!-- userDetails.ejs -->
+<%- include('layout/header',{ title: 'User Details' })  %>
+
+<div class="col-md-4 mb-4 mt-4  justify-content-center">
+    <div class="card text-center align-center card1 justify-content-center">
+        <!-- Banner with Company Name -->
+        <div class="banner" >
+           <div class="banner-text">
+            <h4 class="text">SWISSBAKE</h4>
+            <p style="font-size: 12px;">Innovative Baking Solutions</p>
+        </div>
+        </div>
+        <!-- Display user image -->
+        <img src="/<%= user.image %>" class=" image card-img-top mx-auto mt-5" style="width: 150px; height: 150px ;border-radius:15%; object-fit: cover;" alt="User Image">
+        <div class="card-body">
+            <p class="card-text designation"> <%= user.designation %></p>
+            <h5 class="card-title pb-10 "><%= user.name %></h5>
+            <div class="card_details text-center">
+                <!-- Email button -->
+                <div class="mb-3">
+                    <a href="mailto:<%= user.email %>" class="btn btn-primary btn-block"><i class="fa-regular fa-envelope-open"></i>   <%= user.email %></a>
+                </div>
+                <!-- WhatsApp button -->
+                <div class="mb-3">
+                    <button id="openWhatsAppBtn" class="btn btn-success btn-block"><%= user.phone %></button>
+                </div>
+                <!-- Download button -->
+                <div>
+                    <button id="downloadContactBtn" class="btn btn-primary btn-block">Download Contact</button>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+<script>
+
+    
+    document.getElementById('downloadContactBtn').addEventListener('click', function() {
+        // Create a vCard content string
+        var vCardContent = `BEGIN:VCARD
+VERSION:3.0
+FN:<%= user.name %>
+TEL:<%= user.phone %>
+PHOTO;VALUE=URL:<%= user.image %>
+END:VCARD`;
+
+        // Create a Blob containing the vCard content
+        var blob = new Blob([vCardContent], { type: 'text/vcard' });
+
+        // Create a link element to trigger the download
+        var link = document.createElement('a');
+
+        // Set the filename to the user's name
+        var fileName = '<%= user.name %>.vcf';
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+
+        // Trigger the download
+        link.click();
+
+        // Provide instructions for Android users
+        alert("The vCard file has been downloaded as '" + fileName + "'. Please open your contacts app and import the file to add the contact.");
+    });
+    
+    document.getElementById('openWhatsAppBtn').addEventListener('click', function() {
+    // Encode the message to be included in the WhatsApp link
+    var message = encodeURIComponent("Hello <%= user.name %>, I'm reaching out to explore more about Swissbake's products");
+
+    // Construct the WhatsApp link with the phone number and the predefined message
+    var whatsappLink = 'https://wa.me/' + '<%= user.phone %>' + '?text=' + message;
+
+    // Open the WhatsApp link in a new tab
+    window.open(whatsappLink, '_blank');
+});
+
+
+    
+</script>
+
+
+<%- include('layout/footer')  %>
+
+
+
+
+

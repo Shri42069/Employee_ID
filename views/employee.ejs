@@ -1,0 +1,79 @@
+<%- include('layout/header')  %>
+
+<div class="container">
+    <% if (users != '') { %>
+        <div class="row">
+            <% users.forEach((row, index) => { %>
+                <div class="col-md-4 mb-4 mt-4">
+                    <div class="card text-center align-center card1">
+                        <!-- Banner with Company Name -->
+                        <div class="banner" >
+                           <div class="banner-text">
+                            <h4 class="text">SWISSBAKE</h4>
+                            <p style="font-size: 12px;">Innovative Baking Solutions</p>
+                        </div>
+                        </div>
+                        <!-- Display user image -->
+                        <img src="<%= row.image %>" class="card-img-top mx-auto mt-5" style="width: 150px; height: 150px ;border-radius:15%; object-fit: cover;" alt="User Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= row.name %></h5>
+                            <div class="barcode text-center">
+                                <img src="<%= row.qrImage %>" alt="QR Code" class="text-center" alt="Barcode" style="width: 100px; ;">
+                               
+    
+                            </div>
+                            <button id="downloadBarcodeBtn" class="btn btn-primary"><i class="fa-solid fa-share"></i></button>
+                            
+                            <div class="card_details text-left">
+                                    <div id="userDetails<%= index %>" style="display: none;">
+                                        <p class="card-text">Email: <%= row.email %></p>
+                                        <p class="card-text">Phone: <%= row.phone %></p>
+                                        <p class="card-text">Designation: <%= row.designation %></p>
+                                        <!-- Display barcode image -->
+                                        
+                                        
+                                    </div>
+                                    
+                                </div>
+                            
+                               <!-- Update the href attribute to include user's ID -->
+                               <a href="/userDetails/<%=row.id  %>" class="btn btn-info mt-2">Show Details</a>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+            <% }); %>
+        </div>
+    <% } else { %>
+        <h1 class="text-center text-secondary mt-5">No Users found in the Database</h1>
+    <% } %>
+</div>
+
+<script>
+    function toggleDetails(index) {
+        var detailsDiv = document.getElementById('userDetails' + index);
+        if (detailsDiv.style.display === 'none') {
+            detailsDiv.style.display = 'block';
+        } else {
+            detailsDiv.style.display = 'none';
+        }
+    }
+
+    document.getElementById('downloadBarcodeBtn').addEventListener('click', function() {
+        // Get the barcode image source
+        var barcodeSrc = document.querySelector('.barcode img').getAttribute('src');
+
+        // Create a link element to trigger the download
+        var link = document.createElement('a');
+        link.href = barcodeSrc;
+        link.download = 'barcode.png';
+
+        // Trigger the download
+        link.click();
+    });
+</script>
+
+<%- include('layout/footer')  %>

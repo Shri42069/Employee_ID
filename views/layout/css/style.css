@@ -1,0 +1,91 @@
+.banner{
+    background-color: #c72c41;
+    color: white;
+    border-right: 25px solid transparent;
+    border-bottom: 100px solid #d72328;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    height: 0;
+    width: 80%;
+    position: relative;
+    
+    top: 10px;
+    border-radius: 20px;
+    
+   
+}
+
+
+.banner-text{
+    position: relative;
+    top:20px;
+}
+
+.card1{
+    background-color: whitesmoke;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn{
+    color: white;
+    background-color: #d72328;
+    border-color: #c72c41;
+    width: 220px;
+}
+.btn:hover{
+    color: #d72328;
+    background-color: white;
+    border-color: #c72c41;
+}
+
+body{
+    background-image: url('/images/AI_shriyash-min.webp');
+    background-size: cover; 
+  background-repeat: no-repeat; 
+
+}
+
+.card_details{
+    text-align: left;
+}
+
+.card1{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.card-title{
+    color: #d72328;
+    font-size: 30px;
+    padding-bottom: 20px;
+
+}
+
+.designation{
+    font-family: 'Caveat';font-size: 30px;
+}
+
+.image{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius:15%;
+    border-style: solid;
+    border-color: #d72328 ;
+    
+}
+
+#openWhatsAppBtn{
+    color: white;
+    background-color: 	#25D366;
+    border-color: 	#25D366;
+
+}
+
+#openWhatsAppBtn:hover{
+    color: 	#25D366;
+    background-color: white ;
+    border-color: 	#25D366;
+}
