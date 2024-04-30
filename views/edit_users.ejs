@@ -27,6 +27,10 @@
             <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter your designation" value="<%= user.designation  %>" required>
           </div>
           <div class="form-group p-2">
+            <label for="linkedin">LinkedIn:</label>
+            <input type="text" class="form-control" id="linkedin" name="linkedin" placeholder="Enter your LinkedIn" value="<%= user.linkedin  %>" required>
+          </div>
+          <div class="form-group p-2">
             <label for="image ">Upload Image:</label>
             <input type="file" class="form-control-file" id="image" name="image" >
             <img src="/<%= user.image  %>" width="100" class="img-thumbnail mt-1" >

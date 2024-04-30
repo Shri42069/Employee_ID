@@ -8,6 +8,9 @@ const bwipjs = require('bwip-js');
 const qr = require('qrcode');
 const fs= require('fs');
 const { error } = require("console");
+const Admin = require('../models/admin');
+const bcrypt = require('bcrypt');
+const { addUser, getAllUsers, getEmployees, getAddUserForm, editUser, deleteUser, getUserDetails } = require('../controller/controller');
 
 
 
@@ -55,93 +58,19 @@ var upload = multer({
 
 
 
-router.post("/add", upload, async (req, res) => {
-    try {
-        // Create a new User instance with data from the request
-        const user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            phone: req.body.phone,
-            designation: req.body.designation,
-            image: req.file.filename, // Assuming req.file contains the uploaded file
-        });
-
-        // Save the user to the database
-        await user.save();
-
-        // Generate QR code data with the link to a specific page
-        const link = ``; // Replace example.com with your actual domain
-        const qrData = `User Profile: ${link}`;
-
-        // Generate QR code image using qrcode library
-        qr.toDataURL(qrData, (err, qrImage) => {
-            if (err) {
-                console.error('QR code generation error:', err);
-                // Handle error...
-            } else {
-                // Add qrImage property to user object
-                user.qrImage = qrImage;
-                // Save the updated user with qrImage to the database
-                user.save();
-                // If saved successfully, set a success message in the session
-                req.session.message = {
-                    type: 'success',
-                    message: 'User added successfully !'
-                };
-                // Redirect the user to the home page
-                res.redirect('/');
-            }
-        });
-    } catch (err) {
-        // If there's an error, send a JSON response with the error message
-        res.json({ message: err.message, type: 'danger' });
-    }
+router.post("/add", upload,addUser, async (req, res) => {
+   
 });
-
-
-
-
-
 
 
 //Getting the user information from database
-router.get("/", isAuthenticated, async (req, res) => {
-    try {
-        // Find all users in the database
-        const users = await User.find().exec();
-        
-        // Render the "index" view with the users data
-        res.render('index', {
-            title: 'Home Page',
-            users: users
-        });
-    } catch (err) {
-        // If there's an error, send a JSON response with the error message
-        res.json({ message: err.message });
-    }
-});
+router.get('/', isAuthenticated, getAllUsers);
 
 // Get all users for employee route
-router.get("/employee", async (req, res) => {
-    try {
-        // Find all users in the database
-        const users = await User.find().exec();
-        
-        // Render the "employee" view with the users data
-        res.render('employee', {
-            title: 'Employee',
-            users: users
-        });
-    } catch (err) {
-        // If there's an error, send a JSON response with the error message
-        res.json({ message: err.message });
-    }
-});
+router.get('/employee', getEmployees);
 
 // Render add user form
-router.get('/add', isAuthenticated, (req, res) => {
-    res.render("add_user", { title: "Add User" });
-});
+router.get('/add', isAuthenticated, getAddUserForm);
 
 router.get('/login', (req, res) => {
     res.render('login', { title: 'Login' });
@@ -195,7 +124,8 @@ router.post('/update/:id', upload, async (req, res) => {
             email: req.body.email,
             phone: req.body.phone,
             image: new_image,
-            designation: req.body.designation
+            designation: req.body.designation,
+            linkedin: req.body.linkedin,
         });
 
         if (!result) {
@@ -225,11 +155,17 @@ router.get('/delete/:id', async (req, res) => {
 
         if (result.image !== '') {
             try {
-                await fs.unlink('./uploads/' + result.image);
+                await new Promise((resolve, reject) => {
+                    fs.unlink('./uploads/' + result.image, (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
             } catch (err) {
                 console.error(err);
                 // Handle unlinking error
             }
+            
         }
 
         req.session.message = {
@@ -276,20 +212,41 @@ router.get('/userDetails/:id', async (req, res) => {
 
 //post login authentication
 //Handle login form submission
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
+    console.log("Reached /login route");
+    
     const { username, password } = req.body;
+    
 
-    // Check if username and password match
-    if (username === 'admin' && password === 'swissbake') {
+    try {
+        // Find admin by username
+        const admin = await Admin.findOne({ username });
+
+        if (!admin) {
+            console.log("Admin not found");
+            return res.render('login', { title: 'Login', error: 'Invalid username or password' });
+        }
+
+        // Compare hashed passwords
+        
+        const passwordMatch = await bcrypt.compare(password, admin.password);
+        
+        if (!passwordMatch) {
+            console.log("Invalid password");
+            return res.render('login', { title: 'Login', error: 'Invalid username or password' });
+        }
+
         // If match, set session user and redirect to homepage
-        req.session.user = { username: username };
+        req.session.user = { username: admin.username };
+        console.log("Login successful");
         res.redirect('/');
-    } 
-            else {
-        // If not match, render login page with error message
-        res.render('login', { title: 'Login', error: 'Invalid username or password' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
     }
 });
+
+
 
 
 

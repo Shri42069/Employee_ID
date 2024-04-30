@@ -5,24 +5,30 @@
     <div class="card text-center align-center card1 justify-content-center">
         <!-- Banner with Company Name -->
         <div class="banner" >
+            
            <div class="banner-text">
-            <h4 class="text">SWISSBAKE</h4>
+            <img class="logo" src="/images/Swissbaker-logo- (1).png" alt="" srcset="">
+            <h3 class="text-left">SWISSBAKE<sup>®</sup></h3>
             <p style="font-size: 12px;">Innovative Baking Solutions</p>
-        </div>
+           </div>
         </div>
         <!-- Display user image -->
         <img src="/<%= user.image %>" class=" image card-img-top mx-auto mt-5" style="width: 150px; height: 150px ;border-radius:15%; object-fit: cover;" alt="User Image">
-        <div class="card-body">
-            <p class="card-text designation"> <%= user.designation %></p>
+        <div class="red"></div>
+        <div class="card-body employee-bdy ">
             <h5 class="card-title pb-10 "><%= user.name %></h5>
+            <p class="card-text designation"> <%= user.designation %></p>
+            
             <div class="card_details text-center">
                 <!-- Email button -->
                 <div class="mb-3">
-                    <a href="mailto:<%= user.email %>" class="btn btn-primary btn-block"><i class="fa-regular fa-envelope-open"></i>   <%= user.email %></a>
-                </div>
-                <!-- WhatsApp button -->
-                <div class="mb-3">
-                    <button id="openWhatsAppBtn" class="btn btn-success btn-block"><%= user.phone %></button>
+                    <a href="mailto:<%= user.email %>" class="btn btn-primary btn-block"><i class="fa-solid fa-envelope-open"></i></a>
+                    
+                    
+                    <button id="openWhatsAppBtn" class="btn btn-success btn-block"><i class="fa-brands fa-whatsapp"></i></button>
+                    <a href="tel:<%= user.phone %>" class="btn btn-primary btn-block"><i class="fa-sharp fa-solid fa-phone"></i></a>
+                    <a href="<%= user.linkedin %>" class="btn btn-primary btn-block"><i class="fa-brands fa-linkedin-in"></i></a>
+
                 </div>
                 <!-- Download button -->
                 <div>

@@ -27,6 +27,10 @@ const userSchema= new mongoose.Schema({
         required:true,
         default: () => moment().tz('Asia/Kolkata').toDate(),
     },
+    linkedin:{
+        type:String,
+        required:true,
+    },
     qrImage: {
         type: String,
         required: false,
