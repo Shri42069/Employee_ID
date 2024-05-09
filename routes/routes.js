@@ -20,7 +20,6 @@ const {
   getUserDetails,
 } = require("../controller/controller");
 const crypto = require("crypto");
-const methodOverride = require('method-override');
 const mongoURI = "mongodb+srv://root:root@swissbakecrud.4rwkmwc.mongodb.net/crud?retryWrites=true&w=majority&appName=swissbakecrud";
 const mongoose = require("mongoose");
 const { GridFsStorage } = require("multer-gridfs-storage");
