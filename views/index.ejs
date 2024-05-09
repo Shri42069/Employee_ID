@@ -28,7 +28,12 @@
                             <% users.forEach((row, index) => { %>
                                 <tr class="align-middle text-center ">
                                     <td><%= index %></td>
-                                    <td><img src="<%= row.image %>" width="50" class="img-thumbnail"></td>
+                                    <td>
+                                        <% if (row.image) { %>
+                                            <img src="/images/<%= row.image %>" width="50" class="img-thumbnail">
+                                        <% } else { %>
+                                            <span>No Image</span>
+                                        <% } %>
                                     <td><%= row.name %></td>
                                     <td><%= row.email %></td>
                                     <td><%= row.phone %></td>

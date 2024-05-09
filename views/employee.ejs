@@ -13,8 +13,15 @@
                             <p style="font-size: 12px;">Innovative Baking Solutions</p>
                         </div>
                         </div>
-                        <!-- Display user image -->
-                        <img src="<%= row.image %>" class="card-img-top mx-auto mt-5" style="width: 150px; height: 150px ;border-radius:15%; object-fit: cover;" alt="User Image">
+                         <!-- Display user image -->
+                         <% if (row.image) { %>
+                            <img src="/images/<%= row.image %>" class="card-img-top mx-auto mt-5 img-thumbnail" style="width: 150px; height: 150px ;border-radius:15%; object-fit: cover;" alt="User Image" >
+                        <% } else { %>
+                            <!-- Display a placeholder image or message for missing image -->
+                            <span>No Image Available</span>
+                        <% } %>
+                        
+                        
                         <div class="card-body">
                             <h5 class="card-title"><%= row.name %></h5>
                             <div class="barcode text-center">
