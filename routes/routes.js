@@ -88,7 +88,7 @@ const ObjectId = mongodb.ObjectId
 const connectDB = async () => {
   try {
       const client = await mongoClient.connect("mongodb+srv://root:root@swissbakecrud.4rwkmwc.mongodb.net/?retryWrites=true&w=majority&appName=swissbakecrud", {
-          useUnifiedTopology: true
+        useNewUrlParser: true
       });
       return client.db("mongodb_gridfs");
   } catch (err) {
