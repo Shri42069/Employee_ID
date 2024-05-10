@@ -104,11 +104,28 @@ body{
 
 .fa-solid {
     font-size: 30px;
+    
 }
 .fa-brands{
     font-size: 30px;
+    
 }
 
 .fa-phone{
     font-size: 30px;
+    
+}
+.icon-tog{
+    color: white;
+    background-color: white;
+}
+
+.custom-navbar {
+    background-color: #d72328;
+}
+.icon{
+    color: white;
+}
+.name {
+    color: white;
 }
