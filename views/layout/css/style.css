@@ -15,6 +15,11 @@
     
 }
 
+.center1{
+    height: 100vh;
+    overflow-y: hidden;
+}
+
 .btn{
     color: #d72328;
     background-color: white;
@@ -28,14 +33,21 @@
     background-color: #d72328;
     border-color: #c72c41;
 }
-
+/* 
 body{
     background-image: url('/images/AI_shriyash-min.webp');
     background-size: cover; 
   background-repeat: no-repeat; 
+  background-color: rgba(255, 255, 255, 0.4); 
+ 
+  background-blend-mode: overlay;
+  height: 100vh;
 
+} */
+
+body{
+    background-color: #e9e8e8;
 }
-
 .card_details{
     text-align: left;
 }
@@ -44,6 +56,8 @@ body{
     justify-content: center;
     align-items: center;
     text-align: center;
+    display: flex;
+    top: -1.5rem;
 }
 
 .card-title{
@@ -89,17 +103,19 @@ body{
     border-radius: 20px
 }
 
+
+
 .employee-bdy{
     position: relative;
     top: -6rem;
 }
 
 .logo{
-    width: 52px;
-    height: 52px;
+    width: 259px;
+    height: 50px;
     position: relative;
-    left: -4rem;
-    top: 3.5rem;
+    left: -2rem;
+    top: 0.5rem;
 }
 
 .fa-solid {

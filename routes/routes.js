@@ -336,7 +336,7 @@ router.post('/update/:id', upload, async (req, res) => {
 router.get("/", isAuthenticated, getAllUsers);
 
 // Get all users for employee route
-router.get("/employee", getEmployees);
+router.get("/employee",isAuthenticated, getEmployees);
 
 // Render add user form
 router.get("/add", isAuthenticated, getAddUserForm);
