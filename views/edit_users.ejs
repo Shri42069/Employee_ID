@@ -19,8 +19,24 @@
             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="<%= user.email  %>" required>
           </div>
           <div class="form-group p-2">
+            <label for="name">ID_No:</label>
+            <input type="text" class="form-control" id="id_no" name="id_no" placeholder="Enter your ID_No" value="<%= user.id_no  %>" required>
+          </div>
+          <div class="form-group p-2">
             <label for="phone">Phone:</label>
-            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" pattern="[1-9]{1}[0-9]{9}" value="<%= user.phone  %>" required>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <select class="form-control" id="phone_country_code" name="phone_country_code">
+                        <option value="+91">+91</option>
+                        <option value="022">022</option>
+                    </select>
+                </div>
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number"value="<%= user.phone  %>" required>
+            </div>
+        </div>
+          <div class="form-group p-2">
+            <label for="phone">WhatsApp No:</label>
+            <input type="tel" class="form-control" id="whatsapp" name="whatsapp" placeholder="Enter your whatsapp number"  value="<%= user.whatsapp  %>" required>
           </div>
           <div class="form-group p-2">
             <label for="designation">Designation:</label>
@@ -33,8 +49,9 @@
           <div class="form-group p-2">
             <label for="image ">Upload Image:</label>
             <input type="file" class="form-control-file" id="image" name="image" >
-            <img src="/<%= user.image  %>" width="100" class="img-thumbnail mt-1" >
-            <input type="hidden" name="old_image" value="<%= user.image  %>">
+            <img src="/images/<%= user.image %>" width="100" class="img-thumbnail mt-1" >
+            <input type="hidden" name="old_image" value="<%= user.image %>">
+
           </div >
           <div class="mb-10 d-grid p-2">
           <button type="submit" class="btn btn-success p-2" value="Update User">Update User</button>

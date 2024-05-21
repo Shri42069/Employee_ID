@@ -2,6 +2,10 @@ const { type } = require('express/lib/response');
 const mongoose =require('mongoose');
 const moment = require('moment-timezone');
 const userSchema= new mongoose.Schema({
+    id_no:{
+        type: String,
+        required:true,
+    },
     name:{
         type: String,
         required:true,
@@ -10,7 +14,15 @@ const userSchema= new mongoose.Schema({
         type:String,
         required :true,
     },
+    phone_country_code: { // Add country code for phone number
+        type: String,
+        required: true,
+    },
     phone:{
+        type:String,
+        required :true,
+    },
+    whatsapp:{
         type:String,
         required :true,
     },

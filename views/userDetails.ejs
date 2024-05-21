@@ -1,10 +1,20 @@
 <!-- userDetails.ejs -->
 <%- include('layout/header',{ title: 'User Details' })  %>
+<meta name="theme-color" content=" #d72328 ">
 <style>
     body{
         overflow: hidden;
     }
-    
+    .icon-tog{
+        pointer-events: none;
+        display: visible;
+        background-color:#d72328;
+        border-color:#d72328 ;
+    }
+    .navbar-toggler-icon{
+        display: inline;
+        }
+     
 </style>
 
 
@@ -33,8 +43,10 @@
                     
                     
                     <button id="openWhatsAppBtn" class="btn btn-success btn-block"><i class="fa-brands fa-whatsapp"></i></button>
-                    <a href="tel:<%= user.phone %>" class="btn btn-primary btn-block"><i class="fa-sharp fa-solid fa-phone"></i></a>
+                    <a href="tel:<%= user.phone_country_code + user.phone %>" class="btn btn-primary btn-block"><i class="fa-sharp fa-solid fa-phone"></i></a>
+
                     <a href="<%= user.linkedin %>" class="btn btn-primary btn-block"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="https://www.swissbake.in/" class="btn btn-primary btn-block"><i class="fa-solid fa-globe"></i></a>
 
                 </div>
                 <!-- Download button -->
@@ -49,44 +61,49 @@
 </div>
 </div>
 
+
 <script>
 
-    
-    document.getElementById('downloadContactBtn').addEventListener('click', function() {
-        // Create a vCard content string
-        const vCardContent = `BEGIN:VCARD
+document.getElementById('downloadContactBtn').addEventListener('click', function() {
+    // Create a vCard content string
+    const vCardContent = `BEGIN:VCARD
 VERSION:3.0
-FN:<%= user.name %>
-TEL:<%= user.phone %>
+FN:<%= user.name %>-SwissBake
+TEL:<%= user.phone_country_code + user.phone %>
+TEL;TYPE=Company Support Number,VOICE:02235293529
 EMAIL:<%= user.email %>
+EMAIL;TYPE=Company Support Email:support@swissbake.in
+TITLE:<%= user.designation %>
 PHOTO;VALUE=URL:https://employee-id.onrender.com/images/<%= user.image %>
-URL:https://www.swissbake.in
+URL;TYPE=Company Website:https://www.swissbake.in
+URL;TYPE=LinkedIn Profile:<%= user.linkedin %>
 END:VCARD`;
 
-        // Create a Blob containing the vCard content
-        const blob = new Blob([vCardContent], { type: 'text/vcard' });
+    // Create a Blob containing the vCard content
+    const blob = new Blob([vCardContent], { type: 'text/vcard' });
 
-        // Create a link element to trigger the download
-        const link = document.createElement('a');
+    // Create a link element to trigger the download
+    const link = document.createElement('a');
 
-        // Set the filename to the user's name
-        const fileName = '<%= user.name %>.vcf';
-        link.href = window.URL.createObjectURL(blob);
-        link.download = fileName;
+    // Set the filename to the user's name
+    const fileName = '<%= user.name %>.vcf';
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
 
-        // Trigger the download
-        link.click();
+    // Trigger the download
+    link.click();
 
-        // Provide instructions for Android users
-        alert("The vCard file has been downloaded as '" + fileName + "'. Please open your contacts app and import the file to add the contact.");
-    });
+    // Provide instructions for Android users
+    alert("The vCard file has been downloaded as '" + fileName + "'. Please open your contacts app and import the file to add the contact.");
+});
+
     
     document.getElementById('openWhatsAppBtn').addEventListener('click', function() {
     // Encode the message to be included in the WhatsApp link
     const message = encodeURIComponent("Hello <%= user.name %>, I'm reaching out to explore more about Swissbake's products");
 
     // Construct the WhatsApp link with the phone number and the predefined message
-    const whatsappLink = 'https://wa.me/' + '<%= user.phone %>' + '?text=' + message;
+    const whatsappLink = 'https://wa.me/' + '<%= user.whatsapp %>' + '?text=' + message;
 
     // Open the WhatsApp link in a new tab
     window.open(whatsappLink, '_blank');

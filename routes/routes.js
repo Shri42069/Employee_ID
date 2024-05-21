@@ -27,6 +27,8 @@ const mongodb = require("mongodb");
 const mongoClient = mongodb.MongoClient
 const ObjectId = mongodb.ObjectId
 
+const sharp = require('sharp');
+
 //image upload
 // const storage=multer.diskStorage({
 //     destination:function(req, file, cb){
@@ -87,9 +89,7 @@ const ObjectId = mongodb.ObjectId
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-      const client = await mongoClient.connect("mongodb+srv://root:root@swissbakecrud.4rwkmwc.mongodb.net/?retryWrites=true&w=majority&appName=swissbakecrud", {
-        useNewUrlParser: true
-      });
+      const client = await mongoClient.connect("mongodb+srv://root:root@swissbakecrud.4rwkmwc.mongodb.net/?retryWrites=true&w=majority&appName=swissbakecrud");
       return client.db("mongodb_gridfs");
   } catch (err) {
       console.error("Failed to connect to MongoDB:", err);
@@ -141,40 +141,56 @@ router.post("/add", upload, async (req, res) => {
 
     const filePath = new Date().getTime() + "_" + file.originalname;
 
-    // Check if the file path already exists
-    const existingFile = await db.collection('fs.files').findOne({ filename: filePath });
-    if (existingFile) {
-        // If file path already exists, generate a new unique file path
-        filePath = new Date().getTime() + "_" + file.originalname;
-    }
+    // Resize and compress the image
+    const resizedImageBuffer = await sharp(file.path)
+        .resize({ width: 150, height: 150, fit: 'cover' }) // Resize to 150x150 pixels
+        .jpeg({ quality: 90 }) // Adjust quality as needed
+        .toBuffer();
 
-    fs.createReadStream(file.path)
-        .pipe(bucket.openUploadStream(filePath, {
-            chunkSizeBytes: 1048576,
-            metadata: {
-                name: file.originalname,
-                size: file.size,
-                type: file.mimetype
-            }
-        }))
-        .on("finish", async () => {
-            // Save user to the database with image filename
-            const user = new User({
-                name: req.body.name,
-                email: req.body.email,
-                phone: req.body.phone,
-                designation: req.body.designation,
-                linkedin: req.body.linkedin,
-                image: filePath
-            });
-            await user.save();
-            res.redirect('/');
+    // Upload the resized and compressed image to GridFS
+    bucket.openUploadStream(filePath, {
+        chunkSizeBytes: 1048576,
+        metadata: {
+            name: file.originalname,
+            size: resizedImageBuffer.length,
+            type: file.mimetype
+        }
+    }).end(resizedImageBuffer, async (err) => {
+        if (err) {
+            console.error("Error uploading file:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+
+        // Save user to the database with image filename
+        const user = new User({
+           id_no: req.body.id_no,
+            name: req.body.name,
+            email: req.body.email,
+            phone_country_code: req.body.phone_country_code,
+            phone: req.body.phone,
+            whatsapp: req.body.whatsapp,
+            designation: req.body.designation,
+            linkedin: req.body.linkedin,
+            image: filePath
         });
+        await user.save();
+
+        // Delete the temporary file
+        fs.unlink(file.path, (err) => {
+            if (err) {
+                console.error("Error deleting temporary file:", err);
+            }
+        });
+
+        // Redirect user to '/'
+        res.redirect('/');
+    });
   } catch (err) {
     console.error("Error adding user:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 router.post('/update/:id', upload, async (req, res) => {
   const id = req.params.id;
@@ -182,33 +198,40 @@ router.post('/update/:id', upload, async (req, res) => {
 
   try {
       if (req.file) {
-          // If a new image is uploaded, store it in GridFS
+          // If a new image is uploaded, resize and compress it
+          const file = req.file;
+          const resizedImageBuffer = await sharp(file.path)
+              .resize({ width: 150, height: 150, fit: 'cover' }) // Resize to 150x150 pixels
+              .jpeg({ quality: 90 }) // Adjust quality to 90 (higher quality)
+              .toBuffer();
+
+          // Store the resized and compressed image in GridFS
           const db = await connectDB();
           const bucket = new mongodb.GridFSBucket(db);
-
-          const file = req.file;
           const filePath = new Date().getTime() + "_" + file.originalname;
 
-          // Upload new image to GridFS
           await new Promise((resolve, reject) => {
-              fs.createReadStream(file.path)
-                  .pipe(bucket.openUploadStream(filePath, {
-                      chunkSizeBytes: 1048576,
-                      metadata: {
-                          name: file.originalname,
-                          size: file.size,
-                          type: file.mimetype
-                      }
-                  }))
-                  .on("finish", resolve)
-                  .on("error", reject);
+              bucket.openUploadStream(filePath, {
+                  chunkSizeBytes: 1048576,
+                  metadata: {
+                      name: file.originalname,
+                      size: resizedImageBuffer.length,
+                      type: file.mimetype
+                  }
+              }).end(resizedImageBuffer, (err) => {
+                  if (err) {
+                      reject(err);
+                  } else {
+                      resolve();
+                  }
+              });
           });
 
           newImage = filePath;
 
           // Remove old image from GridFS if it exists
           if (req.body.old_image) {
-              const oldImageId = req.body.old_image; // Use the ID directly
+              const oldImageId = req.body.old_image;
               const existingFile = await bucket.find({ _id: oldImageId }).toArray();
               if (existingFile.length > 0) {
                   await bucket.delete(oldImageId);
@@ -216,6 +239,13 @@ router.post('/update/:id', upload, async (req, res) => {
                   console.error("File not found:", oldImageId);
               }
           }
+
+          // Delete the temporary file
+          fs.unlink(file.path, (err) => {
+              if (err) {
+                  console.error("Error deleting temporary file:", err);
+              }
+          });
       } else {
           // If no new image is uploaded, keep the existing image
           newImage = req.body.old_image;
@@ -223,9 +253,12 @@ router.post('/update/:id', upload, async (req, res) => {
 
       // Update user document with new image path
       const result = await User.findByIdAndUpdate(id, {
+          id_no: req.body.id_no,
           name: req.body.name,
           email: req.body.email,
+          phone_country_code: req.body.phone_country_code,
           phone: req.body.phone,
+          whatsapp: req.body.whatsapp, 
           image: newImage,
           designation: req.body.designation,
           linkedin: req.body.linkedin,
@@ -245,6 +278,7 @@ router.post('/update/:id', upload, async (req, res) => {
       res.status(500).json({ message: err.message, type: 'danger' });
   }
 });
+
 
 
 
@@ -415,8 +449,8 @@ router.get("/userDetails/:id", async (req, res) => {
     const userDetails = await User.findById(userId);
 
     if (!userDetails) {
-      // If no user is found, render an error page or send an appropriate response
-      return res.status(404).render("error", { message: "User not found" });
+      // If no user is found, render the custom 404 page
+      return res.status(404).render("error");
     }
 
     // Render the 'userDetails' view and pass the user details to it
@@ -427,6 +461,7 @@ router.get("/userDetails/:id", async (req, res) => {
     res.status(500).render("error", { message: "Internal Server Error" });
   }
 });
+
 
 //post login authentication
 //Handle login form submission

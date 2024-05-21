@@ -46,9 +46,16 @@ app.use((req,res,next)=>{
 //template engine
 app.set("view engine", "ejs");
 
+// Set the views directory
+app.set("views", "./views");
 
 //route prefix
 app.use("", require('./routes/routes'));
+
+// 404 Error Handling Middleware
+app.use((req, res, next) => {
+    res.status(404).render('404');
+});
 
 
 
