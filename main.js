@@ -47,7 +47,7 @@ app.use((req,res,next)=>{
 app.set("view engine", "ejs");
 
 // Set the views directory
-app.set("views", "./views");
+app.set("views", "./views");   
 
 //route prefix
 app.use("", require('./routes/routes'));

@@ -69,7 +69,8 @@ document.getElementById('downloadContactBtn').addEventListener('click', function
     const vCardContent = `BEGIN:VCARD
 VERSION:3.0
 FN:<%= user.name %>-SwissBake
-TEL:<%= user.phone_country_code + user.phone %>
+TEL;TYPE=VOICE,CELL:<%= user.phone_country_code + user.phone %>
+TEL;TYPE=WHATSAPP,TYPE=Whatsapp::<%=  user.whatsapp %>
 TEL;TYPE=Company Support Number,VOICE:02235293529
 EMAIL:<%= user.email %>
 EMAIL;TYPE=Company Support Email:support@swissbake.in

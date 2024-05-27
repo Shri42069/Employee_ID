@@ -145,3 +145,40 @@ body{
 .name {
     color: white;
 }
+.exclamation{
+    width: 0px;
+   height: 0px;
+   border-style: solid;
+   border-width: 0 47px 92px 47px;
+   border-color: transparent transparent #D72328 transparent;
+   transform: rotate(0deg);
+   position: relative;
+   margin-top: 10rem;
+   margin-bottom: 2rem;
+   
+}
+.fa-exclamation{
+    color: white;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    top: 2.5rem;
+}
+.err1{
+    font-size: medium;
+    position: relative;
+    
+    text-align: center;
+}
+
+.wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.reach {
+    margin-top: 2rem;
+}
